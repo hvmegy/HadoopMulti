@@ -8,7 +8,7 @@ RUN echo "root:root" | chpasswd
 
 # Update and install required packages
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y openjdk-8-jdk wget ssh openssh-server vim && \
+    apt-get install -y openjdk-8-jdk wget ssh openssh-server vim sudo iputils-ping && \
     apt-get clean
 
 # Set environment variables
@@ -20,6 +20,7 @@ ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME/bin
 RUN ssh-keygen -A && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
     mkdir -p /var/run/sshd
 
 # Create user hadoopminhquang
@@ -67,10 +68,10 @@ RUN mkdir -p /home/hadoopminhquang/.ssh && \
     chmod 600 /home/hadoopminhquang/.ssh/authorized_keys && \
     chown -R hadoopminhquang:hadoopminhquang /home/hadoopminhquang/.ssh
 
+
 # Format HDFS
 RUN hdfs namenode -format
 
 # Start SSH and Hadoop services at runtime
 USER root
-ENTRYPOINT ["/bin/bash", "-c", "service ssh start && su - hadoopminhquang -c 'source ~/.bashrc && ${HADOOP_HOME}/sbin/start-all.sh' && tail -f /dev/null"]
-
+CMD ["bash"]

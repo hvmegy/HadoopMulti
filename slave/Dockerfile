@@ -20,6 +20,7 @@ ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME/bin
 RUN ssh-keygen -A && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
     mkdir -p /var/run/sshd
 
 # Create user hadoopminhquang
@@ -60,5 +61,4 @@ COPY config/yarn-site.xml /home/hadoopminhquang/hadoop/etc/hadoop/yarn-site.xml
 
 # Start SSH and Hadoop services at runtime
 USER root
-CMD ["bash", "-c", "service ssh start && tail -f /dev/null"]
-
+CMD ["bash", "-c", "service ssh start && bash"]
