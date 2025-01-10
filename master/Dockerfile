@@ -72,6 +72,9 @@ RUN mkdir -p /home/hadoopminhquang/.ssh && \
 # Format HDFS
 RUN hdfs namenode -format
 
-# Start SSH and Hadoop services at runtime
+# Expose ports
+EXPOSE 22 50070 8088 9000
+
 USER root
-CMD ["bash"]
+# Start SSH and Hadoop services
+CMD ["/bin/bash", "-c", "service ssh start && su - hadoopminhquang && bash"]
